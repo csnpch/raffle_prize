@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.main-container {
+    @apply w-full h-screen bg-slate-700 flex-center overflow-hidden
+}
+
+.bg-img {
+    @apply w-full h-full object-cover object-bottom brightness-75
+}
+
+.sub-container {
+    @apply bg-white/20 backdrop-blur-sm w-10/12 h-5/6 mx-auto
+            rounded-2xl p-20
+}
+
+.flex-center {
+    @apply flex items-center justify-center;
+}
+
+.cardContent {
+    @apply bg-white w-full h-[43rem] p-8 opacity-80 rounded-3xl text-black flex flex-col justify-between
+}
+
+.cardGift {
+    @apply bg-sky-300/40 w-full h-[40%] mt-40 p-6 opacity-80 rounded-3xl text-black
+}

@@ -1,0 +1,215 @@
+  .promo-image {
+    position: relative;
+    bottom: 0;
+    right: 0;
+  }
+  .promo-image svg {
+    display: block;
+  }
+  .promo-image .promo-gift {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: 175px;
+    bottom: 77px;
+    animation-name: promo-gift-wiggle;
+    animation-duration: 2.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+  .promo-image .promo-gift svg, .promo-image .promo-gift div {
+    position: absolute;
+  }
+  .promo-image .promo-gift-wrapper {
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .promo-image .promo-gift-box {
+    bottom: 0;
+    left: 2px;
+  }
+  .promo-image .promo-gift-top {
+    width: 100px;
+    bottom: 56px;
+    left: 2px;
+    animation-name: promo-gift-top-wiggle;
+    animation-duration: 2.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+  .promo-image .promo-gift-lid {
+    bottom: 0;
+    left: 0;
+  }
+  .promo-image .promo-gift-ribbon {
+    bottom: 12px;
+    left: 42px;
+    transform-origin: 50% 100%;
+    transition: all 0.25s ease;
+  }
+  .promo-image .promo-gift-ribbon.ribbon-1 {
+    animation-name: promo-gift-ribbon-1-wiggle;
+    animation-duration: 1.25s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+  .promo-image .promo-gift-ribbon.ribbon-2 {
+    animation-name: promo-gift-ribbon-2-wiggle;
+    animation-duration: 1.25s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+  @keyframes promo-gift-top-wiggle {
+    0% {
+      transform: rotate(0deg);
+      transform-origin: 100% 100%;
+    }
+    10% {
+      transform: rotate(5deg);
+    }
+    14% {
+      transform-origin: 100% 100%;
+      transform: rotate(0deg);
+    }
+    50% {
+      transform-origin: 0% 100%;
+      transform: rotate(0deg);
+    }
+    60% {
+      transform: rotate(-5deg);
+    }
+    64% {
+      transform-origin: 0% 100%;
+      transform: rotate(0deg);
+    }
+    100% {
+      transform-origin: 100% 100%;
+      transform: rotate(0deg);
+    }
+  }
+  @keyframes promo-gift-wiggle {
+    0% {
+      transform: rotate(0deg) scaleX(1);
+      transform-origin: 100% 100%;
+    }
+    8% {
+      transform: rotate(2deg) scaleX(0.99);
+    }
+    12% {
+      transform: rotate(0deg) scaleX(1);
+    }
+    16% {
+      transform: rotate(1deg) scaleX(1);
+    }
+    20% {
+      transform: rotate(0deg) scaleX(1);
+      transform-origin: 100% 100%;
+    }
+    50% {
+      transform: rotate(0deg) scaleX(1);
+      transform-origin: 0% 100%;
+    }
+    58% {
+      transform: rotate(-2deg) scaleX(0.99);
+    }
+    62% {
+      transform: rotate(0deg) scaleX(1);
+    }
+    66% {
+      transform: rotate(-1deg) scaleX(1);
+    }
+    70% {
+      transform: rotate(0deg) scaleX(1);
+      transform-origin: 0% 100%;
+    }
+    100% {
+      transform: rotate(0deg) scaleX(1);
+      transform-origin: 100% 100%;
+    }
+  }
+  @keyframes promo-gift-ribbon-1-wiggle {
+    0% {
+      transform: rotate(45deg);
+    }
+    6% {
+      transform: rotate(40deg);
+    }
+    22% {
+      transform: rotate(65deg);
+    }
+    38% {
+      transform: rotate(30deg);
+    }
+    44% {
+      transform: rotate(45deg);
+    }
+    100% {
+      transform: rotate(45deg);
+    }
+  }
+  @keyframes promo-gift-ribbon-2-wiggle {
+    0% {
+      transform: rotate(-45deg);
+    }
+    6% {
+      transform: rotate(-40deg);
+    }
+    22% {
+      transform: rotate(-65deg);
+    }
+    38% {
+      transform: rotate(-30deg);
+    }
+    44% {
+      transform: rotate(-45deg);
+    }
+    100% {
+      transform: rotate(-45deg);
+    }
+  }
+  @keyframes promo-gift-floating {
+    0% {
+      transform: rotate(-1deg);
+      transform-origin: 50% 100%;
+    }
+    50% {
+      transform: rotate(1deg);
+      transform-origin: 50% 100%;
+    }
+    100% {
+      transform: rotate(-1deg);
+      transform-origin: 50% 100%;
+    }
+  }
+  @keyframes promo-gift-top-floating {
+    0% {
+      transform: rotate(-3deg) translateY(-10px);
+      transform-origin: 50% 100%;
+    }
+    50% {
+      transform: rotate(3deg) translateY(-10px);
+      transform-origin: 50% 100%;
+    }
+    100% {
+      transform: rotate(-3deg) translateY(-10px);
+      transform-origin: 50% 100%;
+    }
+  }
+  @keyframes promo-gift-mini-rotate {
+    100% {
+      background-position: -504px;
+    }
+  }
+  @keyframes confirmation-icon-hue-cycle {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+  

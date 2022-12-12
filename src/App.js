@@ -16,15 +16,27 @@ function App() {
         localStorage.getItem(key) || localStorage.setItem(key, JSON.stringify(val));
     }
 
-    useEffect(() => {
 
+    const setUpLocalStorage = async () => {
         getDataFromLocalStorage('participants', []);
         getDataFromLocalStorage('participantsOnHold', []);
         getDataFromLocalStorage('gift', []);
         getDataFromLocalStorage('numberHoldRandom', 0);
         getDataFromLocalStorage('statusHoldNewRandom', false);
         getDataFromLocalStorage('statusRandomHold', false);
+    }
 
+    // const setUpDefaultValueLocalStorage = async () => {
+        // localStorage.setItem('numberHoldRandom', 0);
+    // }
+
+    useEffect(() => {
+
+        (async () => {
+            await setUpLocalStorage();
+            // await setUpDefaultValueLocalStorage();
+        })()
+        
     }, [])
     
 

@@ -6,42 +6,44 @@ import TextField from '@mui/material/TextField';
 
 export function HoldParticipantRandom() {
 
-    const [numberCutout, setNumberCutout] = useState('0');
+    const [participent, setParticipent] = useState([]);
     const [participentOnHoldRandom, setParticipentOnHoldRandom] = useState([]);
     const [numberHoldRandom, setNumberHoldRandom] = useState(0);
-    const [participent, setParticipent] = useState([]);
     const [statusHoldNewRandom, setStatusHoldNewRandom] = useState(true);
+    
+    const [numberCutout, setNumberCutout] = useState(0);
 
-
-    const getDataFromLocalStorage = async (key, val = null) => {
-        try {
-            if (key === 'participants') {
-                setParticipent(JSON.parse(localStorage.getItem(key) || val));
-            } else if (key === '') {
-
-            }
-        } catch (err) {
-            localStorage.setItem(key, JSON.stringify(val));
-            await getDataFromLocalStorage(key, val);
-        }
-    }
 
     
-    const addingRandomHoldToLocalStorage = (val) => {
+    const addingRandomHoldToLocalStorage = async (val) => {
         try {
             let currentPartiHold = JSON.parse(localStorage.getItem('participantsOnHold') || []);
             currentPartiHold = currentPartiHold.filter((item) => item !== null);
             localStorage.setItem('participantsOnHold', JSON.stringify([...currentPartiHold, val]));
         } catch (err) {
             localStorage.setItem('participantsOnHold', JSON.stringify([]));
-            addingRandomHoldToLocalStorage();
+            await addingRandomHoldToLocalStorage();
         }
     }
 
     
     const resetRandomHold = async () => {
         localStorage.setItem('participantsOnHold', JSON.stringify([]));
+        localStorage.setItem('numberHoldRandom', JSON.stringify(0));
         setParticipentOnHoldRandom([]);
+    }
+
+
+    
+    const getParticipentFromLocalStorage = async () => {
+        try {
+            let tmpData = JSON.parse(localStorage.getItem('participants') || []);
+            setParticipent(tmpData);
+            return tmpData;
+        } catch (err) {
+            localStorage.setItem('participants', JSON.stringify([]));
+            await getParticipentFromLocalStorage();
+        }
     }
 
     const clearSwapParicipentBG = async (parti_elements) => {
@@ -52,18 +54,23 @@ export function HoldParticipantRandom() {
 
 
     const swapParticipentElementBG = async (statusBackword = false) => {
-        await getDataFromLocalStorage('participants', []);
+
+        await getParticipentFromLocalStorage();
+        setParticipent(JSON.parse(localStorage.getItem('participants')));
 
         let parti_elements = document.querySelectorAll('.row-participant');
         let index = 0;
+        let tmpParticipent = await getParticipentFromLocalStorage();
 
         await clearSwapParicipentBG(parti_elements);
+        await getParticipentFromLocalStorage();
 
         const intervalSwapBG = setInterval(() => {
-            if (index < participent.length) {
+            
+            if (index < tmpParticipent.length) {
                 parti_elements[index++].classList.add('bgPartiToggle');
             } else {
-                index = participent.length - 1;
+                index = tmpParticipent.length - 1;
                 clearInterval(intervalSwapBG);
                 clearSwapParicipentBG(parti_elements);
                 if (statusBackword) {
@@ -84,40 +91,64 @@ export function HoldParticipantRandom() {
 
 
 
-    const onRandomHold = async () => {
-        swapParticipentElementBG(false);
+    const calcTimeRand = async (countdownTime) => {
+        if (countdownTime < 1500) {
+            return 200;
+        }
 
-        console.log('onRandomHold')
+        return countdownTime;
+    }
 
-        if (statusHoldNewRandom) {
-            console.log('if (statusHoldNewRandom) {')
+
+    const intervalRandomHold = (partis) => {
+        let tmpIndexCurrent = 0;
+        let countdownTime = 2000;
+        let stepSpeed = 100;
+        let randomIndex = [Math.floor(Math.random() * partis.length)];
+        
+        let intervalRandom = setInterval(async () => {
+           countdownTime -= stepSpeed; 
+           stepSpeed = await calcTimeRand(countdownTime);
+        }, countdownTime)
+
+
+    }
+
+
+    const onRandomHold = async (partis, unitRandom, statusRandomNew) => {
+        
+
+        await intervalRandomHold(partis);
+
+
+        if (statusRandomNew) {
             await resetRandomHold();
-        } 
+        } else {
 
-        let round = 0;
-        let tempPartiHoldRand = []
+        }
 
-        console.log(numberHoldRandom);
-        const intervalRandom = setInterval(() => {
-            if (round++ < numberHoldRandom) {
-                let tmpVal = participent[Math.floor(Math.random()*participent.length)];
-                
-                if (tempPartiHoldRand.indexOf(tmpVal) === -1) {
-                    tempPartiHoldRand.push(tmpVal);
-                    addingRandomHoldToLocalStorage(tmpVal);
-                } else {
-                    --round;
-                }
-                
-            } else {
-                clearInterval(intervalRandom);
-                setParticipentOnHoldRandom(tempPartiHoldRand);
-            }
-        }, 500)
+        // [Math.floor(Math.random()*tmpParticipent.length)]
+
+    }
+
+
+
+    const setupRandomHold = async () => {
+        
+        swapParticipentElementBG(true);
+
+        let tmpParticipent = await getParticipentFromLocalStorage();
+        let tmpStatusHoldNewRandom = await getStatusOnRandomNewHold();
+        let tmpNumberHoldRandom = await getNumberHoldRandomToLocalStorage();
+
+        await onRandomHold(tmpParticipent, tmpNumberHoldRandom, tmpStatusHoldNewRandom);
+
     }
     
     const getNumberHoldRandomToLocalStorage = async () => {
-        setNumberHoldRandom(parseInt(JSON.parse(localStorage.getItem('numberHoldRandom'))) || '0');
+        let tmpVal = JSON.parse(localStorage.getItem('numberHoldRandom'));
+        setNumberHoldRandom(tmpVal);
+        return tmpVal;
     }
 
     
@@ -134,7 +165,9 @@ export function HoldParticipantRandom() {
 
     
     const getStatusOnRandomNewHold = async () => {
-        setStatusHoldNewRandom(JSON.parse(localStorage.getItem('statusHoldNewRandom') || false));
+        let tmpValue = JSON.parse(localStorage.getItem('statusHoldNewRandom'));
+        setStatusHoldNewRandom(tmpValue);
+        return tmpValue;
     }
     
     
@@ -143,7 +176,7 @@ export function HoldParticipantRandom() {
         if (statusRandomHold) {
             statusRandomHold = false;
             localStorage.setItem('statusRandomHold', JSON.stringify(statusRandomHold));
-            await onRandomHold();
+            await setupRandomHold();
         }
     }
 

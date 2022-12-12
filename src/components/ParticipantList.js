@@ -138,13 +138,6 @@ export function ParticipantList() {
         await setStatusRandomHoldToLocalStorage();
         handleClosePopupRandomHold();
 
-        swapParticipentElementBG(false);
-        setTimeout(() => {
-            swapParticipentElementBG(false);
-        }, 800);
-        setTimeout(() => {
-            swapParticipentElementBG(false);
-        }, 1600);
         // setParticipentOnHoldRandom([]);
 
         // if (statusHoldNewRandom) {
@@ -200,7 +193,7 @@ export function ParticipantList() {
                         <Autocomplete
                             freeSolo
                             inputProps={{min: 0, style: { textAlign: 'center' }}}
-                            value={`${numberHoldRandom}`} 
+                            value={`${numberHoldRandom || ''}`} 
                             options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '14', '16', '18', '20'].filter((item) => parseInt(item) <= participent.length)}
                             onChange={(event, val) => setNumberHoldRandom(val)}
                             renderInput={(params) => <TextField {...params} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
@@ -219,7 +212,7 @@ export function ParticipantList() {
                                     value={statusHoldNewRandom}
                                     onChange={(event, val) => {
                                         setStatusHoldNewRandom(val)
-                                        localStorage.setItem('')
+                                        localStorage.setItem('statusHoldNewRandom', val);
                                     }}
                                 />
                             } 

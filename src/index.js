@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
 import './assets/js/index';
 
 // css
@@ -9,17 +10,17 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-
 // Pages
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+
 document.title = "Good luck :)"
 
 root.render(
   <React.StrictMode>
-    <App />
+      <App />
   </React.StrictMode>
 );
 

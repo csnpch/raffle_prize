@@ -3,17 +3,22 @@
 @tailwind utilities;
 
 
+.bg-img {
+    @apply wh-full object-cover object-bottom brightness-75
+}
+
+.wh-full {
+    @apply w-full h-full;
+}
+
 .main-container {
     @apply w-full h-screen bg-slate-700 flex-center overflow-hidden
 }
 
-.bg-img {
-    @apply w-full h-full object-cover object-bottom brightness-75
-}
 
 .sub-container {
-    @apply bg-white/20 backdrop-blur-sm w-10/12 h-5/6 mx-auto
-            rounded-2xl p-20
+    @apply bg-white/20 backdrop-blur-sm w-[96%] fullXl:w-10/12 h-5/6 mx-auto
+            rounded-2xl p-10 fullXl:p-20
 }
 
 .flex-center {
@@ -21,9 +26,10 @@
 }
 
 .cardContent {
-    @apply bg-white w-full h-[43rem] p-8 opacity-80 rounded-3xl text-black flex flex-col justify-between
+    @apply bg-white w-full h-[32rem] fullXl:h-[43.4rem] p-8 opacity-80 
+        rounded-3xl text-black flex flex-col justify-between
 }
 
 .cardGift {
-    @apply bg-sky-300/40 w-full h-[40%] mt-40 p-6 opacity-80 rounded-3xl text-black
+    @apply bg-sky-300/40 w-full h-[40%] mt-2 fullXl:mt-40 p-6 opacity-80 rounded-3xl text-black
 }

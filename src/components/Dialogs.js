@@ -97,6 +97,7 @@ export function Dialogs() {
             setTextParticipant('');
             
             localStorage.setItem('participants', JSON.stringify(tmpListParti || []));
+            
         } else {
             setTextParticipant('');
         }
@@ -125,7 +126,7 @@ export function Dialogs() {
     }
     
 
-    const handleSetGift = () => {
+    const handleSetGift = (event) => {
         handleCloseCardGiftDialog();
     }
 
@@ -154,11 +155,11 @@ export function Dialogs() {
 
     return (
         <>
-            <div className='fixed right-8 md:-right-20 bottom-2 md:bottom-0 flex md:flex-col gap-3'>
+            <div className='fixed right-3 fullXl:-right-20 bottom-2 md:bottom-0 flex flex-col z-50 gap-3'>
                 <div className="tooltip tooltip-top" data-tip="รายชื่อผู้เข้าร่วม">
                     <button 
                         onClick={handleClickOpenListParticipant}
-                        className="btn bg-indigo-600 hover:bg-indigo-800 text-white shadow-lg text-lg tracking-wide" 
+                        className="btn bg-black hover:text-blue-400 fullXl:bg-indigo-600 hover:fullXl:bg-indigo-800 text-white shadow-lg text-lg tracking-wide" 
                         >
                         <IoIosPeople className='text-3xl' />
                     </button>
@@ -166,7 +167,7 @@ export function Dialogs() {
                 <div className="tooltip tooltip-bottom" data-tip="กำหนดของรางวัล">
                     <button 
                         onClick={handleClickOpenCardGiftDialog}
-                        className="btn btn-primary text-white shadow-lg text-lg tracking-wide" 
+                        className="btn bg-black hover:text-blue-400 text-white shadow-lg text-lg tracking-wide" 
                         >
                         <BsGift className='text-2xl' />
                     </button>
@@ -179,17 +180,14 @@ export function Dialogs() {
             <Dialog open={openCardGiftDialog} onClose={handleCloseCardGiftDialog}>
                 <DialogTitle>กำหนดของรางวัลในการสุ่ม</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="ชื่อของรางวัล"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                        value={gift}
-                        onChange={(event) => setGift(event.target.value)}
-                    />
+                    <textarea 
+                            data-theme="light"
+                            placeholder="ชื่อของรางวัล" 
+                            className="w-full textarea h-40 textarea-primary text-2xl p-4 tracking-wide"
+                            value={gift}
+                            onChange={(event) => {setGift(event.target.value)}}
+                        >
+                    </textarea>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleSetGift}>ยืนยัน</Button>
@@ -254,7 +252,7 @@ export function Dialogs() {
                         <textarea 
                             data-theme="light"
                             placeholder="ชื่อ ตำแหน่ง" 
-                            className="w-full md:w-[30rem] h-96 textarea textarea-primary text-2xl py-2 px-3 tracking-wide"
+                            className="w-[32rem] h-96 textarea textarea-primary text-2xl py-2 px-3 tracking-wide"
                             value={textParticipant}
                             onChange={handdleChageTextParticipant}
                         >

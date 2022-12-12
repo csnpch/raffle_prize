@@ -43,3 +43,17 @@
 .btn-swapY:active {
     transform: translate(0%, -10%);
 }
+
+
+
+@keyframes background-opacity-reset {
+    100% {
+        background-color: rgba(255, 255, 255, 0);
+    }
+}
+
+
+.bgPartiToggle {
+    background-color: #eae9e9;
+    animation: background-opacity-reset 0.40s both;
+}

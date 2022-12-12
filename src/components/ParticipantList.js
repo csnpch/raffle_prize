@@ -6,8 +6,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+// import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -18,16 +22,26 @@ const Transition = forwardRef(function Transition(props, ref) {
 export function ParticipantList() {
 
     const [participent, setParticipent] = useState([]);
+    const [numberHoldRandom, setNumberHoldRandom] = useState(0);
+    const [participentOnHoldRandom, setParticipentOnHoldRandom] = useState([]);
+    const [statusHoldNewRandom, setStatusHoldNewRandom] = useState(true);
+    const [statusDialogOnRandom, setStatusDialogOnRandom] = useState(true);
+
+    const [openDialogGetNumberHoldRand, setOpenDialogGetNumberHoldRand] = useState(false);
+
+    const setNumberHoldRandomToLocalStorage = async () => {
+        localStorage.setItem('numberHoldRandom', JSON.stringify(numberHoldRandom));
+    }
 
 
-    const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
+    const randomHoldParticipents = () => {
+        setOpenDialogGetNumberHoldRand(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    
+    const handleClosePopupRandomHold = () => {
+        setNumberHoldRandom(0)
+        setOpenDialogGetNumberHoldRand(false);
     };
 
 
@@ -44,59 +58,207 @@ export function ParticipantList() {
       
         setParticipent(tmpParticipent);
         await updateParticipentToLocalStorage(tmpParticipent);
-      }
+        await swapParticipentElementBG(true);
+    }
+
 
     const updateParticipentToLocalStorage = async (newParticipents) => {
         localStorage.setItem('participants', JSON.stringify(newParticipents));
     }
 
+
     const getParticipentFromLocalStorage = async () => {
-        setParticipent(JSON.parse(localStorage.getItem('participants') || []));
+        try {
+            setParticipent(JSON.parse(localStorage.getItem('participants') || []));
+        } catch (err) {
+            localStorage.setItem('participants', JSON.stringify([]));
+            await getParticipentFromLocalStorage();
+        }
     }
+
+
+    const clearSwapParicipentBG = async (parti_elements) => {
+        parti_elements.forEach((el) => {
+            el.classList.remove('bgPartiToggle');
+        })
+    }
+
+
+    const swapParticipentElementBG = async (statusBackword = false) => {
+        await getParticipentFromLocalStorage();
+
+        let parti_elements = document.querySelectorAll('.row-participant');
+        let index = 0;
+
+        await clearSwapParicipentBG(parti_elements);
+
+        const intervalSwapBG = setInterval(() => {
+            if (index < participent.length) {
+                parti_elements[index++].classList.add('bgPartiToggle');
+            } else {
+                index = participent.length - 1;
+                clearInterval(intervalSwapBG);
+                clearSwapParicipentBG(parti_elements);
+                if (statusBackword) {
+                    const intervalSwapBGbackword = setInterval(() => {
+                    
+                        if (index >= 0) {
+                            parti_elements[index--].classList.add('bgPartiToggle');
+                        } else {
+                            clearInterval(intervalSwapBGbackword);
+                            clearSwapParicipentBG(parti_elements);
+                        }
+                    
+                    }, 36);
+                }
+            }
+        }, 36);
+    }
+
+
+    const addingRandomHoldToLocalStorage = (val) => {
+        try {
+            let currentPartiHold = JSON.parse(localStorage.getItem('participantsOnHold') || []);
+            currentPartiHold = currentPartiHold.filter((item) => item !== null);
+            localStorage.setItem('participantsOnHold', JSON.stringify([...currentPartiHold, val]));
+        } catch (err) {
+            localStorage.setItem('participantsOnHold', JSON.stringify([]));
+            addingRandomHoldToLocalStorage();
+        }
+    }
+
+
+    const setStatusRandomHoldToLocalStorage = async () => {
+        localStorage.setItem('statusRandomHold', JSON.stringify(true));
+    }
+
+
+    const onRandomHold = async () => {
+        await setNumberHoldRandomToLocalStorage();
+        await setStatusRandomHoldToLocalStorage();
+        handleClosePopupRandomHold();
+
+        swapParticipentElementBG(false);
+        setTimeout(() => {
+            swapParticipentElementBG(false);
+        }, 800);
+        setTimeout(() => {
+            swapParticipentElementBG(false);
+        }, 1600);
+        // setParticipentOnHoldRandom([]);
+
+        // if (statusHoldNewRandom) {
+        //     console.log(statusHoldNewRandom);
+        //     await resetRandomHold();
+        // } 
+
+        // let round = 0;
+        // let tempPartiHoldRand = []
+
+        // const intervalRandom = setInterval(() => {
+        //     if (round++ < parseInt(numberHoldRandom)) {
+        //         let tmpVal = participent[Math.floor(Math.random()*participent.length)];
+                
+        //         if (tempPartiHoldRand.indexOf(tmpVal) === -1) {
+        //             tempPartiHoldRand.push(tmpVal);
+        //             addingRandomHoldToLocalStorage(tmpVal);
+        //         } else {
+        //             --round;
+        //         }
+                
+        //     } else {
+        //         console.log('end')
+        //         clearInterval(intervalRandom);
+        //         setParticipentOnHoldRandom(tempPartiHoldRand);
+        //     }
+        // }, 500)
+
+    }
+
 
     useEffect(() => {
 
         setInterval(async () => {
             await getParticipentFromLocalStorage();
         }, 200);
-        
+
     }, [])
+
 
     return (
         <>
 
             <Dialog
-                open={open}
+                open={openDialogGetNumberHoldRand}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={handleClose}
+                onClose={handleClosePopupRandomHold}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-                <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
-                    Let Google help apps determine location. This means sending anonymous
-                    location data to Google, even when no apps are running.
-                </DialogContentText>
+                <DialogContent style={{'width': 340}}>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        <Autocomplete
+                            freeSolo
+                            inputProps={{min: 0, style: { textAlign: 'center' }}}
+                            value={`${numberHoldRandom}`} 
+                            options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '14', '16', '18', '20'].filter((item) => parseInt(item) <= participent.length)}
+                            onChange={(event, val) => setNumberHoldRandom(val)}
+                            renderInput={(params) => <TextField {...params} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
+                        />
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleClose}>Agree</Button>
+                    <div className='flex justify-between w-full'>
+                        <FormControlLabel 
+                            className='ml-3' 
+                            control={
+                                <Switch 
+                                    color="secondary" 
+                                    defaultChecked 
+                                    size="small"
+                                    value={statusHoldNewRandom}
+                                    onChange={(event, val) => {
+                                        setStatusHoldNewRandom(val)
+                                        localStorage.setItem('')
+                                    }}
+                                />
+                            } 
+                            label="สุ่มใหม่" 
+                        />
+                        <div>
+                            <Button onClick={handleClosePopupRandomHold}>ยกเลิก</Button>
+                            <Button onClick={onRandomHold}>ทำการสุ่มเลือก</Button>
+                        </div>
+                    </div>
                 </DialogActions>
             </Dialog>
 
+            {/* <Dialog
+                open={statusDialogOnRandom}
+                TransitionComponent={Transition}
+                keepMounted
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogContent style={{'width': 340}}>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        <div className=''>
+                            Chitsanuphong Chaihong QA
+                        </div>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog> */}
 
 
             <div className='h-full text-black overflow-hidden' data-theme='light'>
-                <div className='mb-4' style={{'fontSize': 20}}>
-                    ผู้เข้าร่วมทั้งหมด &nbsp;( { participent.length } คน )
+                <div className='mb-4 text-black font-medium' style={{'fontSize': 20}}>
+                    ผู้เข้าร่วมทั้งหมด ( { participent.length } )
                 </div>
-                <div className='pt-3 h-full overflow-y-auto pb-10 hide-scroll border-t-2 border-red-200'>
+                <div className='pt-3 h-full overflow-y-auto pb-10 hide-scroll border-t-2 border-black/20'>
                     {
                         participent.length > 0 ?
                         participent.map((item, index) => {
                             return <>
-                                <div key={index} style={{'fontSize': 18}} className='py-3 grid grid-cols-[40px_1fr_20px]'>
+                                <div key={index} style={{'fontSize': 18}} className='row-participant py-3 grid grid-cols-[40px_1fr_20px]'>
                                     <p>{index+1}.</p>
                                     <p className='border-b-2'>{item}</p>
                                 </div>
@@ -107,9 +269,9 @@ export function ParticipantList() {
                     }
                 </div>
             </div>
-            <div className='bg-white w-full grid grid-cols-[1fr_2fr] gap-x-2'>
-                <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับตำแหน่ง</Button>
-                <Button variant="contained" className='w-full btn-swapY' onClick={handleClickOpen}>สุ่มผู้มีสิทธิรับของรางวัล</Button>
+            <div className='bg-white w-full grid grid-cols-[1fr_2fr] gap-x-2 pt-2'>
+                <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับ<span>ตำแหน่ง</span></Button>
+                <Button variant="contained" className='w-full btn-swapY' onClick={randomHoldParticipents}>สุ่มผู้มีสิทธิรับของรางวัล</Button>
             </div>
         </>
     )

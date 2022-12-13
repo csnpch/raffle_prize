@@ -21,6 +21,7 @@ export function HoldParticipantRandom() {
     const addParticipantsHold = useStoreActions((actions) => actions.addParticipantsHold);
     const setParticipantHold = useStoreActions((actions) => actions.setParticipantHold);
     const changeItemParticipantsHold = useStoreActions((actions) => actions.changeItemParticipantsHold);
+    const removeItemParticipantsHold = useStoreActions((actions) => actions.removeItemParticipantsHold);
     const clearParticipantsHold = useStoreActions((actions) => actions.clearParticipantsHold);
 
     // const statusRandomHoldNext = useStoreState((state) => state.participantsHold);
@@ -142,6 +143,21 @@ export function HoldParticipantRandom() {
     }
 
 
+    // const addEffectToRowHold = async (valFinal) => {
+        // let elementsRandomhold = document.querySelectorAll('.row-holdPartis'); 
+        // let tmpElVal = '';
+
+        // elementsRandomhold.forEach((el) => {
+        //     tmpElVal = el.querySelector('.value')
+        //     console.log(tmpElVal.innerText, ' - ', valFinal);
+        //     if (tmpElVal.innerText === valFinal) {
+        //         console.log('got! - ', tmpElVal.innerText, ' - ', valFinal);
+        //     }
+        //     console.log('miss*');
+        // })
+    // }
+
+
     const countDownRandomHold = async (count, partis) => {
         let randomIndex = Math.floor(Math.random() * partis.length);
         let tempValRand = partis[randomIndex];
@@ -190,14 +206,17 @@ export function HoldParticipantRandom() {
             await onRandom();
             
             let tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
+            
             while (tmpCheckHold.includes(partis[randomIndex])) {
                 
                 tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
                 randomIndex = Math.floor(Math.random() * partis.length);
                 changeItemParticipantsHold({index: count, value: partis[randomIndex]});
-                
-                console.log(tmpCheckHold.indexOf(partis[randomIndex]));
+            
             }
+
+            // await addEffectToRowHold(partis[randomIndex]);
+            
         }, 1500);
         }, 800);
         }, 500);
@@ -295,6 +314,18 @@ export function HoldParticipantRandom() {
     }
 
 
+    const onCutoutHoldToFinal = async () => {
+
+        if (parseInt(numberCutout) === 0) {
+            return;
+        }
+        
+        
+        return;
+    }
+
+
+
     useEffect(() => {
         setInterval(async () => {
             await getNumberHoldRandomToLocalStorage();
@@ -346,7 +377,7 @@ export function HoldParticipantRandom() {
                             return <>
                                 <div key={index} style={{'fontSize': 18}} className='py-3 grid grid-cols-[40px_1fr_20px]'>
                                     <p>{index+1}.</p>
-                                    <p className='border-b-2'>{item}</p>
+                                    <p className='resultHold resultHoldZoom value border-b-2'>{item}</p>
                                 </div>
                             </>
                         })
@@ -369,7 +400,7 @@ export function HoldParticipantRandom() {
                 </div>
                 <div className='w-full'>
                     <Tooltip title="STEP 2 : สุ่มคัดคนออกให้เหลือเฉพาะคนที่ได้ของรางวัล" arrow>
-                        <Button variant="contained" className='w-full btn-swapY' onClick={() => {}}>สุ่มหาผู้ได้รางวัล</Button>
+                        <Button variant="contained" className='w-full btn-swapY' onClick={onCutoutHoldToFinal}>สุ่มหาผู้ได้รางวัล</Button>
                     </Tooltip>
                 </div>
             </div>

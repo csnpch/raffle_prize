@@ -57,6 +57,9 @@ const store = createStore({
     state.participantsHold[payload.index] = payload.value;
     localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));
   }),
+  removeItemParticipantsHold: action((state, payload) => {
+    state.participantsHold.splice(payload.index, 1);
+  }),
   clearParticipantsHold: action((state, payload) => {
     state.participantsHold = [];
     localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));

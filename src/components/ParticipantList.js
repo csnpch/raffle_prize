@@ -298,7 +298,7 @@ export function ParticipantList() {
                                 window.location.reload();
                             }
                         })
-                    }}>หยุดการสุ่มผู้มีสิทธิ</Button>
+                    }}>หยุดการสุ่ม</Button>
                     : 
                     <>
                         <Tooltip title="STEP 1 : สุ่มผู้มีสิทธิให้รับรางวัลจากผู้เข้าร่วมทั้งหมด" arrow>

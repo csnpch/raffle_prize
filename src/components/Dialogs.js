@@ -32,7 +32,12 @@ export function Dialogs() {
     };
 
     const handleCloseCardGiftDialog = () => {
-        localStorage.setItem('gift', gift);
+        let tmpGift = gift.split('\n');
+        if (tmpGift.length === 1 && tmpGift[0] === '') {
+            localStorage.setItem('gift', JSON.stringify([]));
+        } else {
+            localStorage.setItem('gift', JSON.stringify(tmpGift));
+        }
         setOpenCardGiftDialog(false);
     };
 
@@ -144,7 +149,7 @@ export function Dialogs() {
     useEffect(() => {
         
         setParticipant(JSON.parse(localStorage.getItem('participants')) || []);
-        setGift(localStorage.getItem('gift') || '');
+        setGift((localStorage.getItem('gift') === '[]' ? '' : localStorage.getItem('gift')));
 
     }, [])
 

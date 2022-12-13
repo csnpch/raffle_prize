@@ -1,4 +1,7 @@
 import { useState, useEffect, forwardRef } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 // import { Helmet } from "react-helmet";
 
 import Button from '@mui/material/Button';
@@ -9,25 +12,35 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Tooltip from '@mui/material/Tooltip';
 // import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Switch from '@mui/material/Switch';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const MySwal = withReactContent(Swal);
 
 export function ParticipantList() {
 
+
+    const numberHold = useStoreState((state) => state.numberHold);
+    const setNumberHold = useStoreActions((actions) => actions.setNumberHold);
+
+    const participantsHold = useStoreState((state) => state.participantsHold);
+    const clearParticipantsHold = useStoreActions((actions) => actions.clearParticipantsHold);
+
+
     const [participent, setParticipent] = useState([]);
     const [numberHoldRandom, setNumberHoldRandom] = useState(0);
-    const [participentOnHoldRandom, setParticipentOnHoldRandom] = useState([]);
-    const [statusHoldNewRandom, setStatusHoldNewRandom] = useState(true);
-    const [statusDialogOnRandom, setStatusDialogOnRandom] = useState(true);
+    // const [participentOnHoldRandom, setParticipentOnHoldRandom] = useState([]);
+    // const [statusHoldNewRandom, setStatusHoldNewRandom] = useState(true);
+    // const [statusDialogOnRandom, setStatusDialogOnRandom] = useState(true);
 
     const [openDialogGetNumberHoldRand, setOpenDialogGetNumberHoldRand] = useState(false);
+
 
     const setNumberHoldRandomToLocalStorage = async () => {
         localStorage.setItem('numberHoldRandom', JSON.stringify(numberHoldRandom));
@@ -45,21 +58,21 @@ export function ParticipantList() {
     };
 
 
-    const randomPositionParticipents = async () => {
-        let tmpParticipent = participent;
-        let currentIndex = tmpParticipent.length,  randomIndex;
+    // const randomPositionParticipents = async () => {
+    //     let tmpParticipent = participent;
+    //     let currentIndex = tmpParticipent.length,  randomIndex;
       
-        while (currentIndex !== 0) {
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-          [tmpParticipent[currentIndex], tmpParticipent[randomIndex]] = [
-            tmpParticipent[randomIndex], tmpParticipent[currentIndex]];
-        }
+    //     while (currentIndex !== 0) {
+    //       randomIndex = Math.floor(Math.random() * currentIndex);
+    //       currentIndex--;
+    //       [tmpParticipent[currentIndex], tmpParticipent[randomIndex]] = [
+    //         tmpParticipent[randomIndex], tmpParticipent[currentIndex]];
+    //     }
       
-        setParticipent(tmpParticipent);
-        await updateParticipentToLocalStorage(tmpParticipent);
-        await swapParticipentElementBG(true);
-    }
+    //     setParticipent(tmpParticipent);
+    //     await updateParticipentToLocalStorage(tmpParticipent);
+    //     await swapParticipentElementBG(true);
+    // }
 
 
     const updateParticipentToLocalStorage = async (newParticipents) => {
@@ -134,6 +147,8 @@ export function ParticipantList() {
 
 
     const onRandomHold = async () => {
+        await getParticipentFromLocalStorage();
+        setNumberHold(numberHoldRandom);
         await setNumberHoldRandomToLocalStorage();
         await setStatusRandomHoldToLocalStorage();
         handleClosePopupRandomHold();
@@ -173,7 +188,7 @@ export function ParticipantList() {
 
         setInterval(async () => {
             await getParticipentFromLocalStorage();
-        }, 200);
+        }, 1000);
 
     }, [])
 
@@ -195,14 +210,16 @@ export function ParticipantList() {
                             inputProps={{min: 0, style: { textAlign: 'center' }}}
                             value={`${numberHoldRandom || ''}`} 
                             options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '14', '16', '18', '20'].filter((item) => parseInt(item) <= participent.length)}
-                            onChange={(event, val) => setNumberHoldRandom(val)}
+                            onChange={(event, val) => {
+                                setNumberHoldRandom(val)
+                            }}
                             renderInput={(params) => <TextField {...params} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
                         />
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <div className='flex justify-between w-full'>
-                        <FormControlLabel 
+                        {/* <FormControlLabel 
                             className='ml-3' 
                             control={
                                 <Switch 
@@ -217,7 +234,9 @@ export function ParticipantList() {
                                 />
                             } 
                             label="สุ่มใหม่" 
-                        />
+                        /> */}
+                        <div>
+                        </div>
                         <div>
                             <Button onClick={handleClosePopupRandomHold}>ยกเลิก</Button>
                             <Button onClick={onRandomHold}>ทำการสุ่มเลือก</Button>
@@ -262,9 +281,31 @@ export function ParticipantList() {
                     }
                 </div>
             </div>
-            <div className='bg-white w-full grid grid-cols-[1fr_2fr] gap-x-2 pt-2'>
-                <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับ<span>ตำแหน่ง</span></Button>
-                <Button variant="contained" className='w-full btn-swapY' onClick={randomHoldParticipents}>สุ่มผู้มีสิทธิรับของรางวัล</Button>
+            <div className='bg-white w-full grid xgrid-cols-[1fr_2fr] gap-x-2 pt-2'>
+                {/* <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับ<span>ตำแหน่ง</span></Button> */}
+                {
+                    (participantsHold.length > 0 && participantsHold.length < numberHold) ?
+                    <Button variant="contained" color="secondary" className='w-full btn-swapY' onClick={() => {
+                        Swal.fire({
+                            title: 'ต้องการหยุดการสุ่มผู้มีสิทธิ?',
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            cancelButtonText: 'ยกเลิก',
+                            denyButtonText: `ยืนยัน`,
+                        }).then(async (result) => {
+                            if (result.isDenied) {
+                                window.location.reload();
+                            }
+                        })
+                    }}>หยุดการสุ่มผู้มีสิทธิ</Button>
+                    : 
+                    <>
+                        <Tooltip title="STEP 1 : สุ่มผู้มีสิทธิให้รับรางวัลจากผู้เข้าร่วมทั้งหมด" arrow>
+                            <Button variant="contained" className='w-full btn-swapY' onClick={randomHoldParticipents}>สุ่มผู้มีสิทธิรับของรางวัล</Button>
+                        </Tooltip>
+                    </>
+                }
             </div>
         </>
     )

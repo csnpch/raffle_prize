@@ -22,7 +22,7 @@ function App() {
         getDataFromLocalStorage('participantsOnHold', []);
         getDataFromLocalStorage('gift', []);
         getDataFromLocalStorage('numberHoldRandom', 0);
-        getDataFromLocalStorage('statusHoldNewRandom', false);
+        getDataFromLocalStorage('statusHoldNewRandom', true);
         getDataFromLocalStorage('statusRandomHold', false);
     }
 

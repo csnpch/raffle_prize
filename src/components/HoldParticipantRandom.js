@@ -214,8 +214,6 @@ export function HoldParticipantRandom() {
                 changeItemParticipantsHold({index: count, value: partis[randomIndex]});
             
             }
-
-            // await addEffectToRowHold(partis[randomIndex]);
             
         }, 1500);
         }, 800);
@@ -314,14 +312,87 @@ export function HoldParticipantRandom() {
     }
 
 
-    const onCutoutHoldToFinal = async () => {
+    const alertCantRandomCutoutHold = () => {
+        MySwal.fire({
+            showCloseButton: false, 
+            showConfirmButton: false,
+            html: <i>โปรดระบุจำนวนผู้ได้รับของรางวัล</i>,
+            icon: 'warning',
+            timer: 1000,
+        });
+    }
 
-        if (parseInt(numberCutout) === 0) {
+
+    const cutoutHold = async (count, partisHold) => {
+        
+        
+        if (parseInt(numberCutout) === 0) { 
+            alertCantRandomCutoutHold();
             return;
         }
         
+        const getIndexRandom = async () => {
+            return Math.floor(Math.random() * partisHold.length)
+        }
+        let randomIndex = await getIndexRandom();
+        let tempValRand = partisHold[randomIndex];
+
+        const getElementsRowItemHold = async () => {
+            return document.querySelectorAll('.row-item-hold');
+        }
+
+        const onRandom = async () => {
+            let indexRand = await getIndexRandom();
+            
+            let elementsHold = await getElementsRowItemHold();
+            elementsHold[indexRand].classList.add('bgPartiToggle')
+            setTimeout(() => {
+                elementsHold[indexRand].classList.remove('bgPartiToggle');
+            }, 500);
+            
+        }
         
-        return;
+        // setTimeout(async () => {
+        setTimeout(async () => {
+        await onRandom();
+        setTimeout(async () => {
+        await onRandom();
+        setTimeout(async () => {
+        await onRandom();
+        setTimeout(async () => {
+        await onRandom();
+        }, 1000);   
+        }, 1000);    
+        }, 1000);     
+        }, 1000);     
+
+        //     let tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
+            
+        //     while (tmpCheckHold.includes(partis[randomIndex])) {
+                
+        //         tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
+        //         randomIndex = Math.floor(Math.random() * partis.length);
+            
+        //     }
+        // }, 1500);
+
+    }
+
+
+    const onCutoutHoldToFinal = async () => {
+
+        let count = 0;
+
+        await cutoutHold(count++, participantsHold);
+        let interval = setInterval(async () => {
+            if (count < numberCutout) {
+                await cutoutHold(count++, participantsHold);
+            } else {
+                clearInterval(interval);
+            }
+        }, 5000);
+
+
     }
 
 
@@ -377,7 +448,7 @@ export function HoldParticipantRandom() {
                             return <>
                                 <div key={index} style={{'fontSize': 18}} className='py-3 grid grid-cols-[40px_1fr_20px]'>
                                     <p>{index+1}.</p>
-                                    <p className='resultHold resultHoldZoom value border-b-2'>{item}</p>
+                                    <p className='row-item-hold resultHold resultHoldZoom value border-b-2'>{item}</p>
                                 </div>
                             </>
                         })
@@ -391,7 +462,7 @@ export function HoldParticipantRandom() {
                     <Autocomplete
                         freeSolo
                         size="small"
-                        className='text-red-400'
+                        className='inputUnitGotGift text-red-400'
                         style={{'color': 'red'}}
                         options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].filter((item) => parseInt(item) <= participantsHold.length)}
                         renderInput={(params) => <TextField {...params} label="จำนวนผู้ได้รับรางวัล" />}

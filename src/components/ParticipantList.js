@@ -211,11 +211,19 @@ export function ParticipantList() {
                             freeSolo
                             inputProps={{min: 0, style: { textAlign: 'center' }}}
                             value={`${numberHoldRandom || ''}`} 
-                            options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '14', '16', '18', '20'].filter((item) => parseInt(item) <= participent.length)}
+                            options={[]}
+                            // options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '14', '16', '18', '20'].filter((item) => parseInt(item) <= participent.length)}
                             onChange={(event, val) => {
                                 setNumberHoldRandom(val)
                             }}
-                            renderInput={(params) => <TextField {...params} onChange={(event) => setNumberHoldRandom(event.target.value)} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
+                            renderInput={(params) => <TextField {...params} 
+                            onChange={(event) => setNumberHoldRandom(event.target.value)} 
+                            onKeyPress={(event) => {
+                                if (event.key === 'Enter') {
+                                    onRandomHold();
+                                }
+                            }}
+                            label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
                         />
                     </DialogContentText>
                 </DialogContent>

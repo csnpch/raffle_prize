@@ -351,8 +351,21 @@ export function HoldParticipantRandom() {
     }
 
 
+    const onSuccessCutout = async () => {
+        setStatusOnRandomCutout(false);
+
+        let elementSuccess = await getElementsRowItemHold();
+
+        elementSuccess.forEach((el) => {
+            try {
+                el.classList.add('partiHoldGotGift');
+            } catch (err) { }
+        })
+    }
+
+
     const cutoutHold = async (count, partisHold, TempCheckLastRand = null) => {
-        
+
         if (parseInt(numberCutout) === 0) { 
             alertCantRandomCutoutHold();
             return;
@@ -389,8 +402,7 @@ export function HoldParticipantRandom() {
                 // if (indexRand < partisHold.length - 2) {
                 elementsHold[indexRand].scrollIntoView({
                     behavior: 'smooth',
-                    block: 'nearest', 
-                    inline: 'start'
+                    block: 'nearest',
                 });
                 // }
                 
@@ -438,10 +450,10 @@ export function HoldParticipantRandom() {
             await clearClassInElementsHold();
             
             try {
-                elHold[indexRandom].classList.add('bgPartiToggleCutout')
+                elHold[indexRandom].classList.add('bgPartiToggleCutout');
                 elHold[indexRandom].scrollIntoView({
                     block: 'center',
-                    behavior: 'smooth'
+                    behavior: 'smooth',
                 });
             } catch (err) { }
             
@@ -488,18 +500,6 @@ export function HoldParticipantRandom() {
         
     }
 
-
-    const onSuccessCutout = async () => {
-        setStatusOnRandomCutout(false);
-
-        let elementSuccess = await getElementsRowItemHold();
-
-        elementSuccess.forEach((el) => {
-            try {
-                el.classList.add('partiHoldGotGift');
-            } catch (err) { }
-        })
-    }
 
 
     const onCutoutHoldToFinal = async () => {
@@ -549,7 +549,7 @@ export function HoldParticipantRandom() {
     return (
         <>
             <div className='h-full text-black overflow-hidden flex flex-col px-1' data-theme='light'>
-                <div className='mb-4 flex justify-between items-end font-medium' style={{'fontSize': 20}}>
+                <div className='title-itemHold mb-4 flex justify-between items-end font-medium' style={{'fontSize': 20}}>
                     <span className={`${statusRandomCutoutFN ? 'text-indigo-700' : 'text-red-600'}`}>
                         {
                             statusRandomCutoutFN ?
@@ -602,7 +602,7 @@ export function HoldParticipantRandom() {
                         <></>
                     }
                 </div>
-                <div className='container_itemHold pt-3 h-full overflow-y-auto pb-20 hide-scroll border-t-2 border-red-200 overflow-x-hidden'>
+                <div className={`${participantsHold.length > 6 ? 'pb-80' : 'pb-20'} container_itemHold pt-3 h-full overflow-y-auto hide-scroll border-t-2 border-red-200 overflow-x-hidden`}>
                     {
                         participantsHold.length > 0 ?
                         participantsHold.map((item, index) => {
@@ -635,7 +635,13 @@ export function HoldParticipantRandom() {
                 <div className='w-full'>
                     <Tooltip title="STEP 2 : สุ่มคัดคนออกให้เหลือเฉพาะคนที่ได้ของรางวัล" arrow>
                         <Button variant="contained" disabled={statusOnRandomCutout} className='w-full btn-swapY relative' onClick={onCutoutHoldToFinal}>
-                            { statusOnRandomCutout && <CircularProgress className='text-blue-600 absolute left-6 w-5 h-5' /> }สุ่มหาผู้ได้รางวัล</Button>
+                            { statusOnRandomCutout && <CircularProgress className='text-blue-600 absolute left-6 w-5 h-5' /> }
+                            {
+                                participantsHold.length - numberCutout !== 0 ?
+                                'สุ่มหาผู้ได้รางวัล' :
+                                'ยินดีด้วย 🎉'
+                            }
+                        </Button>
                     </Tooltip>
                 </div>
             </div>

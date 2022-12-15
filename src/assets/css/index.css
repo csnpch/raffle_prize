@@ -132,6 +132,17 @@
 }
 
 
+@keyframes spinFlower {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.flower {
+    animation: spinFlower 16s infinite;
+}
+
+
 @keyframes resultHoldZoom {
     0% {
         transform: scale(1);

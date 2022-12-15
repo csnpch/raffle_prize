@@ -17,7 +17,10 @@ export function Gift() {
     <div class="relative box w-full h-[26rem] fullXl:-mt-[9rem] fullXl:h-[34rem] bg-sky-300/30 rounded-2xl text-white">
         <div class="ribbon ribbon-top-left"><span>Prize Gift</span></div>
 
-        <div className='wh-full flex-center'>
+        <div className='wh-full flex-center relative'>
+            <div className='w-[6rem] h-[6rem] absolute -right-6 -top-6 opacity-80'>
+                <img className='wh-full flower' src="./flower.png" alt="" />
+            </div>
             <div className={`flex flex-col ${gift.length > 4 ? (gift.length > 6 ? 'text-2xl' : 'text-3xl') : 'text-4xl'}`}>
                 {
                     gift.map((item, index) => {

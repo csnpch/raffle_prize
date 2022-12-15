@@ -29,7 +29,7 @@
 
 
 .main-container {
-    @apply w-full h-screen bg-slate-700 flex-center overflow-hidden mx-auto
+    @apply fixed left-0 top-0 w-full h-screen bg-slate-700 flex-center overflow-hidden mx-auto
 }
 
 .sub-container {

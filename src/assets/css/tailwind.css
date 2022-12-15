@@ -2800,6 +2800,9 @@ html {
 }
 
 .main-container {
+  position: fixed;
+  left: 0px;
+  top: 0px;
   margin-left: auto;
   margin-right: auto;
   height: 100vh;
@@ -2900,6 +2903,10 @@ html {
 
   .fullXl\:-right-20 {
     right: -5rem !important;
+  }
+
+  .fullXl\:-mt-\[9rem\] {
+    margin-top: -9rem !important;
   }
 
   .fullXl\:h-\[34rem\] {

@@ -14,7 +14,7 @@ export function Gift() {
     
     return <>
     
-    <div class="relative box w-full h-[26rem] fullXl:h-[34rem] bg-sky-300/30 rounded-2xl text-white">
+    <div class="relative box w-full h-[26rem] fullXl:-mt-[9rem] fullXl:h-[34rem] bg-sky-300/30 rounded-2xl text-white">
         <div class="ribbon ribbon-top-left"><span>Prize Gift</span></div>
 
         <div className='wh-full flex-center'>

@@ -506,7 +506,7 @@ export function HoldParticipantRandom() {
 
         let partisHoldTemp = await getParticipantHoldFromLocalStorage();
         
-        if (statusOnRandomCutout || partisHoldTemp.length === 1 || parseInt(partisHoldTemp.length) === parseInt(numberCutout) || parseInt(numberCutout) < 1) return;
+        if (statusOnRandomCutout || partisHoldTemp.length <= 1 || parseInt(partisHoldTemp.length) === parseInt(numberCutout) || parseInt(numberCutout) < 1) return;
         
         setStatusRandomCutoutFN(false);
         setStatusOnRandomCutout(true);

@@ -29,9 +29,10 @@ export function ParticipantList() {
     const numberHold = useStoreState((state) => state.numberHold);
     const setNumberHold = useStoreActions((actions) => actions.setNumberHold);
 
-    const participantsHold = useStoreState((state) => state.participantsHold);
-    const clearParticipantsHold = useStoreActions((actions) => actions.clearParticipantsHold);
+    const statusRandomHoldNow = useStoreState((state) => state.statusRandomHoldNow);
+    const setStatusRandomHoldNow = useStoreActions((actions) => actions.setStatusRandomHoldNow);
 
+    const participantsHold = useStoreState((state) => state.participantsHold);
 
     const [participent, setParticipent] = useState([]);
     const [numberHoldRandom, setNumberHoldRandom] = useState(0);
@@ -149,6 +150,7 @@ export function ParticipantList() {
     const onRandomHold = async () => {
         await getParticipentFromLocalStorage();
         setNumberHold(numberHoldRandom);
+        setNumberHoldRandom(numberHoldRandom);
         await setNumberHoldRandomToLocalStorage();
         await setStatusRandomHoldToLocalStorage();
         handleClosePopupRandomHold();
@@ -213,7 +215,7 @@ export function ParticipantList() {
                             onChange={(event, val) => {
                                 setNumberHoldRandom(val)
                             }}
-                            renderInput={(params) => <TextField {...params} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
+                            renderInput={(params) => <TextField {...params} onChange={(event) => setNumberHoldRandom(event.target.value)} label="จำนวนผู้มีสิทธิลุ้นรับของรางวัล" />}
                         />
                     </DialogContentText>
                 </DialogContent>
@@ -261,11 +263,11 @@ export function ParticipantList() {
             </Dialog> */}
 
 
-            <div className='h-full text-black overflow-hidden' data-theme='light'>
+            <div className='h-full text-black overflow-hidden flex flex-col' data-theme='light'>
                 <div className='mb-4 text-black font-medium' style={{'fontSize': 20}}>
                     ผู้เข้าร่วมทั้งหมด ( { participent.length } )
                 </div>
-                <div className='pt-3 h-full overflow-y-auto pb-10 hide-scroll border-t-2 border-black/20'>
+                <div className='pt-3 h-full overflow-y-auto pb-20 hide-scroll border-t-2 border-black/20'>
                     {
                         participent.length > 0 ?
                         participent.map((item, index) => {
@@ -281,10 +283,11 @@ export function ParticipantList() {
                     }
                 </div>
             </div>
-            <div className='bg-white w-full grid xgrid-cols-[1fr_2fr] gap-x-2 pt-2'>
+            <div className='bg-white w-full grid xgrid-cols-[1fr_2fr] gap-x-2 pt-3'>
                 {/* <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับ<span>ตำแหน่ง</span></Button> */}
                 {
-                    (participantsHold.length > 0 && participantsHold.length < numberHold) ?
+                    // (participantsHold.length > 0 && (participantsHold.length < numberHold)) ?
+                    statusRandomHoldNow ?
                     <Button variant="contained" color="secondary" className='w-full btn-swapY' onClick={() => {
                         Swal.fire({
                             title: 'ต้องการหยุดการสุ่มผู้มีสิทธิ?',

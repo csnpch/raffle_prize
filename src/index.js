@@ -44,12 +44,28 @@ const store = createStore({
     state.statusRandomHold = payload;
   }),
 
+
+  
+  statusOnRandomCutout: false,
+  setStatusOnRandomCutout: action((state, payload) => {
+    state.statusOnRandomCutout = payload;
+  }),
+
+  
+  statusRandomCutoutFN: false,
+  setStatusRandomCutoutFN: action((state, payload) => {
+    state.statusRandomCutoutFN = payload;
+  }),
+
   participantsHold: [],
+  getParticipantHold: action((state, payload) => {
+    state.participantsHold = JSON.parse(localStorage.getItem('participantsOnHold'));
+  }),
   setParticipantHold: action((state, payload) => {
     state.participantsHold = payload;
     localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold || []));
   }),
-  addParticipantsHold: action((state, payload) => {
+  addParticipantHold: action((state, payload) => {
     state.participantsHold.push(payload);
     localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));
   }),
@@ -57,8 +73,13 @@ const store = createStore({
     state.participantsHold[payload.index] = payload.value;
     localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));
   }),
+  removeItemParticipantsHoldByValue: action((state, payload) => {
+    state.participantsHold = state.participantsHold.filter(item => item !== payload);
+    localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));
+  }),
   removeItemParticipantsHold: action((state, payload) => {
-    state.participantsHold.splice(payload.index, 1);
+    state.participantsHold = state.participantsHold.filter((item, index) => index !== payload);
+    localStorage.setItem('participantsOnHold', JSON.stringify(state.participantsHold));
   }),
   clearParticipantsHold: action((state, payload) => {
     state.participantsHold = [];

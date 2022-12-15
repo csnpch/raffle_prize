@@ -25,19 +25,26 @@ export function Dialogs() {
     
     // Variable for Inputs
     const [textParticipant, setTextParticipant] = useState([]);
+    const [textGift, setTextGift] = useState('');
 
 
     const handleClickOpenCardGiftDialog = () => {
         setOpenCardGiftDialog(true);
+
+        let tmpGift = JSON.parse(localStorage.getItem('gift') || []);
+        setGift(tmpGift);
+        console.log('tmpGift', tmpGift)
+        if (tmpGift.length > 0) {
+            let tmpTextGift = '';
+            // for (let)
+            tmpGift.forEach((item, index) => {
+                tmpTextGift += item + ((index < tmpGift.length - 1) ? '\n' : '' );
+            });
+            setTextGift(tmpTextGift);
+        }
     };
 
     const handleCloseCardGiftDialog = () => {
-        let tmpGift = gift.split('\n');
-        if (tmpGift.length === 1 && tmpGift[0] === '') {
-            localStorage.setItem('gift', JSON.stringify([]));
-        } else {
-            localStorage.setItem('gift', JSON.stringify(tmpGift));
-        }
         setOpenCardGiftDialog(false);
     };
 
@@ -46,12 +53,15 @@ export function Dialogs() {
         setOpenListParticipant(true);
     };
 
+
     const handleCloseListParticipant = () => {
         setOpenListParticipant(false);
     };
 
+
     const descriptionElementRef = useRef(null);
     
+
     const handdleChageTextParticipant = (event) => {
         setTextParticipant(event.target.value);
     }
@@ -133,8 +143,17 @@ export function Dialogs() {
 
     const handleSetGift = (event) => {
         handleCloseCardGiftDialog();
-    }
 
+        console.log(textGift);
+        let tmpGift = textGift.split('\n');
+        tmpGift = tmpGift.filter((item) => item !== '');
+        if (tmpGift.length === 1 && tmpGift[0] === '') {
+            localStorage.setItem('gift', JSON.stringify([]));
+        } else {
+            localStorage.setItem('gift', JSON.stringify(tmpGift));
+        }
+        
+    }
 
     useEffect(() => {
         if (openListParticipant) {
@@ -183,14 +202,19 @@ export function Dialogs() {
 
             {/*! Gift Dialog */}
             <Dialog open={openCardGiftDialog} onClose={handleCloseCardGiftDialog}>
-                <DialogTitle>กำหนดของรางวัลในการสุ่ม</DialogTitle>
+                <DialogTitle>
+                    <div className='flex flex-col gap-2'>
+                        <p>กำหนดของรางวัลในการสุ่ม</p>
+                        <p className='text-xs text-indigo-600'>รองรับจำนวนของขวัญได้ทั้งหมด 8 ชิ้น (เกินได้)</p>                        
+                    </div>
+                </DialogTitle>
                 <DialogContent>
                     <textarea 
                             data-theme="light"
                             placeholder="ชื่อของรางวัล" 
-                            className="w-full textarea h-40 textarea-primary text-2xl p-4 tracking-wide"
-                            value={gift}
-                            onChange={(event) => {setGift(event.target.value)}}
+                            className="w-[24rem] min-h-[14rem] leading-[2.4rem] textarea textarea-primary text-2xl p-4 tracking-wide"
+                            value={textGift}
+                            onChange={(event) => setTextGift(event.target.value)}
                         >
                     </textarea>
                 </DialogContent>
@@ -219,10 +243,10 @@ export function Dialogs() {
                     <DialogTitle id="scroll-dialog-title">
                         เพิ่มผู้เข้าร่วม <br />
                         <div className='flex flex-col mt-2 gap-y-1'>
-                            <span className='text-sm underline mb-0.5'>ตัวอย่าง Input patten 3 แบบ</span>
-                            <span className='text-xs text-indigo-700'>สมศักดิ์</span>
-                            <span className='text-xs text-indigo-700'>สมศักดิ์  DevOps</span>
-                            <span className='text-xs text-indigo-700'>สมศักดิ์-เจริญกรุง  QA</span>
+                            <span className='text-sm underline mb-0.5'>ตัวอย่าง Input patten</span>
+                            <span className='text-xs text-indigo-700'>มะเฟือง QA</span>
+                            <span className='text-xs text-indigo-700'>พาฝัน วงศ์สุรวัฒนา HR</span>
+                            <span className='text-xs text-indigo-700'>สมศักดิ์ เจริญกรุง DevOps</span>
                         </div>
                     </DialogTitle>
                 }
@@ -257,7 +281,7 @@ export function Dialogs() {
                         <textarea 
                             data-theme="light"
                             placeholder="ชื่อ ตำแหน่ง" 
-                            className="w-[32rem] h-96 textarea textarea-primary text-2xl py-2 px-3 tracking-wide"
+                            className="w-[32rem] h-96 leading-[2.4rem] textarea textarea-primary text-xl py-2 px-3 tracking-wide"
                             value={textParticipant}
                             onChange={handdleChageTextParticipant}
                         >

@@ -11,13 +11,29 @@
     @apply w-full h-full;
 }
 
-.main-container {
-    @apply w-full h-screen bg-slate-700 flex-center overflow-hidden
+
+
+@keyframes getLayoutOriginal {
+    100% {
+        @apply grid-cols-[2fr_2.2fr_2fr];
+        opacity: 100%;
+    }
 }
 
 
+.layoutCardOriginal {
+    animation-delay: 4s;
+    animation: getLayoutOriginal 1s both;
+    opacity: 0%;
+}
+
+
+.main-container {
+    @apply w-full h-screen bg-slate-700 flex-center overflow-hidden mx-auto
+}
+
 .sub-container {
-    @apply bg-white/20 backdrop-blur-sm w-[96%] fullXl:w-10/12 h-5/6 mx-auto
+    @apply bg-white/20 backdrop-blur-sm w-[96%] fullXl:w-10/12 h-[90%] mx-auto
             rounded-2xl p-10 fullXl:p-20
 }
 
@@ -26,10 +42,10 @@
 }
 
 .cardContent {
-    @apply bg-white w-full h-[32rem] fullXl:h-[43.4rem] p-8 opacity-80 
+    @apply bg-white w-full h-[35.2rem] fullXl:h-[43.4rem] p-8 
         rounded-3xl text-black flex flex-col justify-between
 }
 
 .cardGift {
-    @apply bg-sky-300/40 w-full h-[40%] mt-2 fullXl:mt-40 p-6 opacity-80 rounded-3xl text-black
+    @apply h-full w-full fullXl:mt-40 p-2 rounded-3xl text-black
 }

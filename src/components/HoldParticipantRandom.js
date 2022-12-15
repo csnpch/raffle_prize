@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { AiOutlineClear } from 'react-icons/ai';
 
 
@@ -16,13 +18,30 @@ const MySwal = withReactContent(Swal);
 
 
 export function HoldParticipantRandom() {
+
     
+    const numberHold = useStoreState((state) => state.numberHold);
+    const setNumberHold = useStoreActions((actions) => actions.setNumberHold);
+    
+    const statusRandomCutoutFN = useStoreState((state) => state.statusRandomCutoutFN);
+    const setStatusRandomCutoutFN = useStoreActions((actions) => actions.setStatusRandomCutoutFN);
+
+    const statusOnRandomCutout = useStoreState((state) => state.statusOnRandomCutout);
+    const setStatusOnRandomCutout = useStoreActions((actions) => actions.setStatusOnRandomCutout);
+
+    const statusRandomHoldNow = useStoreState((state) => state.statusRandomHoldNow);
+    const setStatusRandomHoldNow = useStoreActions((actions) => actions.setStatusRandomHoldNow);
+
     const participantsHold = useStoreState((state) => state.participantsHold);
-    const addParticipantsHold = useStoreActions((actions) => actions.addParticipantsHold);
+    const getParticipantHold = useStoreActions((actions) => actions.getParticipantHold);
+    const addParticipantHold = useStoreActions((actions) => actions.addParticipantHold);
     const setParticipantHold = useStoreActions((actions) => actions.setParticipantHold);
     const changeItemParticipantsHold = useStoreActions((actions) => actions.changeItemParticipantsHold);
     const removeItemParticipantsHold = useStoreActions((actions) => actions.removeItemParticipantsHold);
+    const removeItemParticipantsHoldByValue = useStoreActions((actions) => actions.removeItemParticipantsHoldByValue);
     const clearParticipantsHold = useStoreActions((actions) => actions.clearParticipantsHold);
+    
+
 
     // const statusRandomHoldNext = useStoreState((state) => state.participantsHold);
     // const setStatusRandomHoldNext = useStoreActions((actions) => actions.setStatusRandomHoldNext);
@@ -73,8 +92,8 @@ export function HoldParticipantRandom() {
 
     
     const resetRandomHold = async () => {
+        setStatusRandomCutoutFN(false);
         clearParticipantsHold()
-        // localStorage.setItem('numberHoldRandom', JSON.stringify(0));
         await clearListHold();
     }
 
@@ -168,7 +187,8 @@ export function HoldParticipantRandom() {
             changeItemParticipantsHold({index: count, value: tempValRand});
         }
 
-        addParticipantsHold(tempValRand);
+        addParticipantHold(tempValRand);
+        document.querySelector('.container_itemHold').scrollTo(0, document.querySelector('.container_itemHold').scrollHeight);
 
         setTimeout(async () => {
         await onRandom();
@@ -246,6 +266,7 @@ export function HoldParticipantRandom() {
             setNumberHoldRandom(numberHoldRandom + unitRandom);
             // setNumberHold(numberHold + unitRandom);
         }
+        setStatusRandomHoldNow(true);
 
         await countDownRandomHold(count++, partis);
         let interval = setInterval(async () => {
@@ -254,6 +275,7 @@ export function HoldParticipantRandom() {
                 await swapParticipentElementBG(false);
                 await countDownRandomHold(count++, partis);
             } else {
+                setStatusRandomHoldNow(false);
                 clearInterval(interval);
             }
         }, 5000);
@@ -268,7 +290,7 @@ export function HoldParticipantRandom() {
 
         let tmpParticipent = await getParticipentFromLocalStorage();
         let tmpStatusHoldNewRandom = await getStatusOnRandomNewHold();
-        let tmpNumberHoldRandom = await getNumberHoldRandomToLocalStorage();
+        let tmpNumberHoldRandom = await getNumberHoldRandomFormLocalStorage();
 
         if (tmpNumberHoldRandom > 0) {
             await onRandomHold(tmpParticipent, tmpNumberHoldRandom, tmpStatusHoldNewRandom);
@@ -276,23 +298,15 @@ export function HoldParticipantRandom() {
 
     }
     
-    const getNumberHoldRandomToLocalStorage = async () => {
+    const getNumberHoldRandomFormLocalStorage = async () => {
         let tmpVal = JSON.parse(localStorage.getItem('numberHoldRandom'));
         setNumberHoldRandom(tmpVal);
         return tmpVal;
     }
 
-    
-    // const getRandomHoldToLocalStorage = async () => {
-    //     try {
-    //         let currentPartiHold = JSON.parse(localStorage.getItem('participantsOnHold') || []);
-    //         currentPartiHold = currentPartiHold.filter((item) => item !== null);
-    //         setParticipentOnHoldRandom(currentPartiHold);
-    //     } catch (err) {
-    //         localStorage.setItem('participantsOnHold', JSON.stringify([]));
-    //         getRandomHoldToLocalStorage();
-    //     }
-    // }
+    const setNumberHoldRandomToLocalStorage = async (number) => {
+        localStorage.setItem('numberHoldRandom', JSON.stringify(number));
+    }
 
     
     const getStatusOnRandomNewHold = async () => {
@@ -322,84 +336,209 @@ export function HoldParticipantRandom() {
         });
     }
 
+       
+    const getOffset = async (el) => {
+        const rect = el.getBoundingClientRect();
+        return {
+            left: rect.left + window.scrollX,
+            top: rect.top + window.scrollY
+        };
+    }
 
-    const cutoutHold = async (count, partisHold) => {
-        
+    
+    const getElementsRowItemHold = async () => {
+        return document.querySelectorAll('.row-item-hold');
+    }
+
+
+    const cutoutHold = async (count, partisHold, TempCheckLastRand = null) => {
         
         if (parseInt(numberCutout) === 0) { 
             alertCantRandomCutoutHold();
             return;
         }
+
+        console.log(TempCheckLastRand);
+        
         
         const getIndexRandom = async () => {
-            return Math.floor(Math.random() * partisHold.length)
+            let partisHoldTemp = await getParticipantHoldFromLocalStorage();
+            return Math.floor(Math.random() * partisHoldTemp.length)
         }
         let randomIndex = await getIndexRandom();
         let tempValRand = partisHold[randomIndex];
 
-        const getElementsRowItemHold = async () => {
-            return document.querySelectorAll('.row-item-hold');
+
+        const clearClassInElementsHold = async () => {
+            let elementsHold = await getElementsRowItemHold();
+            elementsHold.forEach((item) => {
+                item.classList.remove('bgPartiToggleCutout', 'bgPartiToggleCutoutOnRandom', 'partiHoldGotGift');
+            });
         }
+
 
         const onRandom = async () => {
+
             let indexRand = await getIndexRandom();
-            
             let elementsHold = await getElementsRowItemHold();
-            elementsHold[indexRand].classList.add('bgPartiToggle')
-            setTimeout(() => {
-                elementsHold[indexRand].classList.remove('bgPartiToggle');
-            }, 500);
-            
-        }
-        
-        // setTimeout(async () => {
-        setTimeout(async () => {
-        await onRandom();
-        setTimeout(async () => {
-        await onRandom();
-        setTimeout(async () => {
-        await onRandom();
-        setTimeout(async () => {
-        await onRandom();
-        }, 1000);   
-        }, 1000);    
-        }, 1000);     
-        }, 1000);     
 
-        //     let tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
-            
-        //     while (tmpCheckHold.includes(partis[randomIndex])) {
+
+            await clearClassInElementsHold();
+            try {
                 
-        //         tmpCheckHold = JSON.parse(localStorage.getItem('participantsOnHold'));
-        //         randomIndex = Math.floor(Math.random() * partis.length);
-            
-        //     }
-        // }, 1500);
+                // if (indexRand < partisHold.length - 2) {
+                elementsHold[indexRand].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest', 
+                    inline: 'start'
+                });
+                // }
+                
+                elementsHold[indexRand].classList.add('bgPartiToggleCutoutOnRandom')
+                setTimeout(() => {
+                    elementsHold[indexRand].classList.remove('bgPartiToggleCutoutOnRandom');
+                }, 500);
+            } catch (err) { }
+        
+        }
 
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async() => {
+            await onRandom();
+        setTimeout(async () => {
+            await onRandom();
+        setTimeout(async () => {
+
+            let partisHoldTemp = await getParticipantHoldFromLocalStorage();
+            
+            let indexRandom = Math.floor(Math.random() * partisHoldTemp.length);
+            let elHold = await getElementsRowItemHold();
+            
+            await clearClassInElementsHold();
+            
+            try {
+                elHold[indexRandom].classList.add('bgPartiToggleCutout')
+                elHold[indexRandom].scrollIntoView({
+                    block: 'center',
+                    behavior: 'smooth'
+                });
+            } catch (err) { }
+            
+            
+            
+
+            setTimeout(async () => {
+                await clearClassInElementsHold();
+                setNumberHold(partisHoldTemp.length - 1);
+                await setNumberHoldRandomToLocalStorage(partisHoldTemp.length - 1);
+                setTimeout(() =>{ removeItemParticipantsHoldByValue(partisHoldTemp[indexRandom]);}, 200)
+                
+
+                if (TempCheckLastRand.count >= TempCheckLastRand.numCutout) {
+                    setTimeout(() => {
+                        elHold[0].scrollTo({
+                            top: 0,
+                            block: 'top', 
+                            behavior: 'smooth'
+                        });
+                    }, 200);
+                    setStatusRandomCutoutFN(true);
+                    await onSuccessCutout();
+                }
+                
+            }, 2500);
+            
+
+        }, 1000);    
+        }, 800);     
+        }, 800);     
+        }, 500);
+        }, 500);
+        }, 500);
+        }, 500);
+        }, 500);
+        }, 200);
+        }, 200);
+        }, 200);
+        }, 200);
+        }, 200);
+        }, 200);
+
+        
+    }
+
+
+    const onSuccessCutout = async () => {
+        setStatusOnRandomCutout(false);
+
+        let elementSuccess = await getElementsRowItemHold();
+
+        elementSuccess.forEach((el) => {
+            try {
+                el.classList.add('partiHoldGotGift');
+            } catch (err) { }
+        })
     }
 
 
     const onCutoutHoldToFinal = async () => {
 
+        let partisHoldTemp = await getParticipantHoldFromLocalStorage();
+        
+        if (statusOnRandomCutout || partisHoldTemp.length === 1 || parseInt(partisHoldTemp.length) === parseInt(numberCutout) || parseInt(numberCutout) < 1) return;
+        
+        setStatusRandomCutoutFN(false);
+        setStatusOnRandomCutout(true);
+        
         let count = 0;
-
-        await cutoutHold(count++, participantsHold);
+        let tmpNumberCutout = participantsHold.length - numberCutout;
+        console.log('number cutout is ', tmpNumberCutout);
+        await cutoutHold(count++, participantsHold, {count: count, numCutout: tmpNumberCutout});
         let interval = setInterval(async () => {
-            if (count < numberCutout) {
-                await cutoutHold(count++, participantsHold);
+            if (count < tmpNumberCutout) {
+                await cutoutHold(count++, participantsHold, {count: count, numCutout: tmpNumberCutout});
+                getParticipantHold();
             } else {
                 clearInterval(interval);
             }
-        }, 5000);
-
+        }, 11000);
 
     }
 
 
+    const getParticipantHoldFromLocalStorage = async () => {
+        let hold = JSON.parse(localStorage.getItem('participantsOnHold'));
+        setParticipentOnHoldRandom(hold);
+        setParticipantHold(hold);
+        return hold;
+    }
+
 
     useEffect(() => {
         setInterval(async () => {
-            await getNumberHoldRandomToLocalStorage();
+            await getNumberHoldRandomFormLocalStorage();
+            await getParticipantHoldFromLocalStorage();
             await getStatusOnRandomNewHold();
             await checkStatusOnRandomHold();
         }, 1000);
@@ -409,10 +548,31 @@ export function HoldParticipantRandom() {
     
     return (
         <>
-            <div className='h-full text-black overflow-hidden' data-theme='light'>
-                <div className='mb-4 flex justify-between items-end text-red-600 font-medium' style={{'fontSize': 20}}>
-                    <span>
-                        ผู้มีสิทธิรับของรางวัล {participantsHold.length !== 0 && <>( {participantsHold.length}/{numberHoldRandom} )</>}
+            <div className='h-full text-black overflow-hidden flex flex-col px-1' data-theme='light'>
+                <div className='mb-4 flex justify-between items-end font-medium' style={{'fontSize': 20}}>
+                    <span className={`${statusRandomCutoutFN ? 'text-indigo-700' : 'text-red-600'}`}>
+                        {
+                            statusRandomCutoutFN ?
+                            <>
+                                ยินดีด้วย{participantsHold.length === 0 ? 'คุณ' : 'พวกคุณ'}คือผู้โชคดี 🎉
+                            </>
+                            :
+                            <>
+                                ผู้มีสิทธิรับของรางวัล 
+                                {
+                                    (participantsHold.length !== 0 && !statusOnRandomCutout) ? 
+                                    <>( {participantsHold.length}/{numberHoldRandom} )</>
+                                    : 
+                                    <>
+                                        {
+                                            participantsHold.length - numberCutout !== 0 &&
+                                                <span className='text-xs w-full text-center text-black'>
+                                                {' '}( ตัดสิทธิอีก <span className='font-medium text-sm'>{participantsHold.length - numberCutout}</span> คน )</span>
+                                        }
+                                    </>
+                                }
+                            </>
+                        }
                     </span>
                     {
                         participantsHold.length > 0 ?
@@ -429,6 +589,7 @@ export function HoldParticipantRandom() {
                                     }).then(async (result) => {
                                         /* Read more about isConfirmed, isDenied below */
                                         if (result.isConfirmed) {
+                                            localStorage.setItem('numberHoldRandom', JSON.stringify(0));
                                             await resetRandomHold();
                                         }
                                     })
@@ -441,14 +602,16 @@ export function HoldParticipantRandom() {
                         <></>
                     }
                 </div>
-                <div className='pt-3 h-full overflow-y-auto pb-10 hide-scroll border-t-2 border-red-200'>
+                <div className='container_itemHold pt-3 h-full overflow-y-auto pb-20 hide-scroll border-t-2 border-red-200 overflow-x-hidden'>
                     {
                         participantsHold.length > 0 ?
                         participantsHold.map((item, index) => {
                             return <>
-                                <div key={index} style={{'fontSize': 18}} className='py-3 grid grid-cols-[40px_1fr_20px]'>
+                                <div key={index} style={{'fontSize': 18}} className={`${statusRandomCutoutFN ? 'py-1.5' : 'py-3'} grid grid-cols-[40px_1fr_20px] items-center`}>
                                     <p>{index+1}.</p>
-                                    <p className='row-item-hold resultHold resultHoldZoom value border-b-2'>{item}</p>
+                                    <p className='row-item-hold duration-300 resultHold resultHoldZoom value border-b-2'>
+                                        {item}
+                                    </p>
                                 </div>
                             </>
                         })
@@ -457,21 +620,22 @@ export function HoldParticipantRandom() {
                     }
                 </div>
             </div>
-            <div className='bg-white w-full grid grid-cols-[2fr_3fr] gap-x-2 pt-2'>
+            <div className='bg-white w-full grid grid-cols-[2fr_3fr] gap-x-2 pt-3'>
                 <div className='w-full bg-white'>
                     <Autocomplete
                         freeSolo
                         size="small"
                         className='inputUnitGotGift text-red-400'
                         style={{'color': 'red'}}
-                        options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].filter((item) => parseInt(item) <= participantsHold.length)}
-                        renderInput={(params) => <TextField {...params} label="จำนวนผู้ได้รับรางวัล" />}
+                        options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].filter((item) => parseInt(item) < participantsHold.length)}
+                        renderInput={(params) => <TextField {...params} label="จำนวนผู้ได้รับรางวัล" onChange={event => setNumberCutout(event.target.value)} />}
                         onChange={(event, val) => setNumberCutout(val)}
                     />
                 </div>
                 <div className='w-full'>
                     <Tooltip title="STEP 2 : สุ่มคัดคนออกให้เหลือเฉพาะคนที่ได้ของรางวัล" arrow>
-                        <Button variant="contained" className='w-full btn-swapY' onClick={onCutoutHoldToFinal}>สุ่มหาผู้ได้รางวัล</Button>
+                        <Button variant="contained" disabled={statusOnRandomCutout} className='w-full btn-swapY relative' onClick={onCutoutHoldToFinal}>
+                            { statusOnRandomCutout && <CircularProgress className='text-blue-600 absolute left-6 w-5 h-5' /> }สุ่มหาผู้ได้รางวัล</Button>
                     </Tooltip>
                 </div>
             </div>

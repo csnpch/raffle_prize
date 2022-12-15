@@ -5,11 +5,11 @@
     height: 5px;
     border-radius: 50%;
     box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;
-    -moz-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
-    -webkit-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
-    -o-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
-    -ms-animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
-    animation: 1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards;
+    -moz-animation: 1s bang ease-out 6 backwards, 1s gravity ease-in 6 backwards, 5s position linear 6 backwards;
+    -webkit-animation: 1s bang ease-out 6 backwards, 1s gravity ease-in 6 backwards, 5s position linear 6 backwards;
+    -o-animation: 1s bang ease-out 6 backwards, 1s gravity ease-in 6 backwards, 5s position linear 6 backwards;
+    -ms-animation: 1s bang ease-out 6 backwards, 1s gravity ease-in 6 backwards, 5s position linear 6 backwards;
+    animation: 1s bang ease-out 6 backwards, 1s gravity ease-in 6 backwards, 5s position linear 6 backwards;
 }
 
 .pyro>.after {
@@ -281,7 +281,7 @@
     color: #E74C3C;
     bottom: -210px;
     position: relative;
-    -webkit-animation: bounce 1s infinite;
+    -webkit-animation: bounce 1s 6;
 }
 
 #arianne {

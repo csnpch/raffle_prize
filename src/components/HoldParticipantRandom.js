@@ -16,7 +16,6 @@ import { AiOutlineClear } from 'react-icons/ai';
 
 
 const MySwal = withReactContent(Swal);
-const audioRand = new Audio('./sound_onRandom.mp3');
 
 
 export function HoldParticipantRandom({ playSound }) {
@@ -24,6 +23,9 @@ export function HoldParticipantRandom({ playSound }) {
     
     const numberHold = useStoreState((state) => state.numberHold);
     const setNumberHold = useStoreActions((actions) => actions.setNumberHold);
+
+    const statusMuteSound = useStoreState((state) => state.statusMuteSound);
+    const setStatusMuteSound = useStoreActions((actions) => actions.setStatusMuteSound);
     
     const statusRandomCutoutFN = useStoreState((state) => state.statusRandomCutoutFN);
     const setStatusRandomCutoutFN = useStoreActions((actions) => actions.setStatusRandomCutoutFN);
@@ -369,7 +371,9 @@ export function HoldParticipantRandom({ playSound }) {
 
 
     const playAudioOnRand = () => {
-        audioRand.volume = 0.6
+        let audioRand = new Audio('./sound_onRandom.mp3');
+        audioRand.volume = 0.4;
+        console.log('statusMuteSound', statusMuteSound);
         audioRand.play();
     }
 
@@ -402,9 +406,10 @@ export function HoldParticipantRandom({ playSound }) {
 
         const onRandom = async () => {
 
+            playAudioOnRand();
+
             let indexRand = await getIndexRandom();
             let elementsHold = await getElementsRowItemHold();
-
 
             await clearClassInElementsHold();
             try {

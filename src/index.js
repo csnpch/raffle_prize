@@ -29,6 +29,10 @@ const store = createStore({
     state.numberHold = payload;
   }),
 
+  statusMuteSound: false,
+  setStatusMuteSound: action((state, payload) => {
+    state.statusMuteSound = payload;
+  }),
   // statusRandomHoldNext: true,
   // setStatusRandomHoldNext: action((state, payload) => {
   //   state.statusRandomHoldNext = payload;

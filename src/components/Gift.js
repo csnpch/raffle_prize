@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+import { GoMute, GoUnmute } from 'react-icons/go';
 
 
 export function Gift() {
     
     const [gift, setGift] = useState([]);
+
+    const statusMuteSound = useStoreState((state) => state.statusMuteSound);
+    const setStatusMuteSound = useStoreActions((actions) => actions.setStatusMuteSound);
 
     useEffect(() => {
         setInterval(() => {
@@ -45,6 +50,11 @@ export function Gift() {
                     </div>
                 }
             </div>
+            
+            {/* <div className='fixed -bottom-[4rem] right-60 text-4xl w-40 h-40 cursor-pointer' style={{zIndex: 999}}>
+                <GoMute className={`${!statusMuteSound && 'hidden'}`} onClick={() => { setStatusMuteSound(!statusMuteSound) }} />
+                <GoUnmute className={`${statusMuteSound && 'hidden'}`} onClick={() => { setStatusMuteSound(!statusMuteSound) }} />
+            </div> */}
         </div>
         {/* <div className="ribbon ribbon-top-right"><span>Prize Gift</span></div> */}
         {/* <div className="ribbon ribbon-bottom-left"><span>Prize Gift</span></div> */}

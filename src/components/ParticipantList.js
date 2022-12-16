@@ -23,9 +23,12 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 const MySwal = withReactContent(Swal);
 
-export function ParticipantList() {
+export function ParticipantList({ playSound }) {
 
-
+    
+    const statusOnRandomCutout = useStoreState((state) => state.statusOnRandomCutout);
+    const setStatusOnRandomCutout = useStoreActions((actions) => actions.setStatusOnRandomCutout);
+    
     const numberHold = useStoreState((state) => state.numberHold);
     const setNumberHold = useStoreActions((actions) => actions.setNumberHold);
 
@@ -41,6 +44,13 @@ export function ParticipantList() {
     // const [statusDialogOnRandom, setStatusDialogOnRandom] = useState(true);
 
     const [openDialogGetNumberHoldRand, setOpenDialogGetNumberHoldRand] = useState(false);
+
+    
+    const playSoundOnRandom = () => {
+        let audio = new Audio('./sound_onRandom.mp3');
+        audio.volume = 0.8;
+        audio.play();
+    }
 
 
     const setNumberHoldRandomToLocalStorage = async () => {
@@ -148,6 +158,14 @@ export function ParticipantList() {
 
 
     const onRandomHold = async () => {
+        
+        if (numberHoldRandom < 1) return;
+        setStatusRandomHoldNow(true);
+
+        [`เริ่มทำการสุ่มผู้มีสิทธิได้รับรางวัล`].forEach((text) => {
+            playSound('th', text);
+        })
+
         await getParticipentFromLocalStorage();
         setNumberHold(numberHoldRandom);
         setNumberHoldRandom(numberHoldRandom);
@@ -294,8 +312,7 @@ export function ParticipantList() {
             <div className='bg-white w-full grid xgrid-cols-[1fr_2fr] gap-x-2 pt-3'>
                 {/* <Button variant="outlined" className='w-full btn-swapY' onClick={randomPositionParticipents}>สลับ<span>ตำแหน่ง</span></Button> */}
                 {
-                    // (participantsHold.length > 0 && (participantsHold.length < numberHold)) ?
-                    statusRandomHoldNow ?
+                    ((participantsHold.length > 0 && (participantsHold.length < numberHold)) && !statusOnRandomCutout) ?
                     <Button variant="contained" color="secondary" className='w-full btn-swapY' onClick={() => {
                         Swal.fire({
                             title: 'ต้องการหยุดการสุ่มผู้มีสิทธิ?',

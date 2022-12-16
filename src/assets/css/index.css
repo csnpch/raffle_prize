@@ -178,3 +178,20 @@
 .textarea-setLineHeight {
     line-height: 200% !important;
 }
+
+
+@keyframes zoomWhile {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animateZoom {
+    animation: zoomWhile 2s infinite;
+}

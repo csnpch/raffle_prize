@@ -12,6 +12,7 @@ import { ParticipantList } from './components/ParticipantList'
 import { HoldParticipantRandom } from './components/HoldParticipantRandom'
 
 
+
 function App() {
 
     const statusRandomCutoutFN = useStoreState((state) => state.statusRandomCutoutFN);
@@ -34,6 +35,23 @@ function App() {
     // const setUpDefaultValueLocalStorage = async () => {
         // localStorage.setItem('numberHoldRandom', 0);
     // }
+
+
+    const playSound = (lang, messageSpeech, speedRate=0.8) => {
+        const speechSynthesis = new SpeechSynthesisUtterance();
+        // speechSynthesis.voiceURI = 'native';
+        speechSynthesis.volume = 1; // 0 to 1
+        // speechSynthesis.rate = speedRate; // 0.1 to 10
+        // speechSynthesis.pitch = 2; //0 to 2
+        if (lang === 'th') {
+            speechSynthesis.lang = 'th-TH';
+        } else if (lang === 'en') {
+            speechSynthesis.lang = 'en-US';
+        }
+        speechSynthesis.text = messageSpeech;
+        window.speechSynthesis.speak(speechSynthesis);
+    }
+
 
     useEffect(() => {
 
@@ -65,10 +83,10 @@ function App() {
                         `}>
                         {/* ${statusOnRandomCutout ? 'grid-cols-[2fr_3fr_2fr] w-full' : 'grid-cols-[2fr_2.2fr_2fr] w-full layoutCardOriginals'} */}
                         <div className={`cardContent participantList duration-1000`}>
-                            <ParticipantList />
+                            <ParticipantList playSound={playSound} />
                         </div>
                         <div className='cardContent'>
-                            <HoldParticipantRandom />
+                            <HoldParticipantRandom playSound={playSound} />
                         </div>
                         <div className='cardGift'>
                             <Gift />

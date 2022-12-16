@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import {Howl, Howler} from 'howler';
 
 // const MySwal = withReactContent(Swal);
 
@@ -15,9 +16,10 @@ import { AiOutlineClear } from 'react-icons/ai';
 
 
 const MySwal = withReactContent(Swal);
+const audioRand = new Audio('./sound_onRandom.mp3');
 
 
-export function HoldParticipantRandom() {
+export function HoldParticipantRandom({ playSound }) {
 
     
     const numberHold = useStoreState((state) => state.numberHold);
@@ -182,6 +184,7 @@ export function HoldParticipantRandom() {
         let tempValRand = partis[randomIndex];
         
         const onRandom = async () => {
+            playAudioOnRand();
             randomIndex = Math.floor(Math.random() * partis.length);
             tempValRand = partis[randomIndex];
             changeItemParticipantsHold({index: count, value: tempValRand});
@@ -234,6 +237,7 @@ export function HoldParticipantRandom() {
                 changeItemParticipantsHold({index: count, value: partis[randomIndex]});
             
             }
+            playAudioOnRand();
             
         }, 1500);
         }, 800);
@@ -364,6 +368,12 @@ export function HoldParticipantRandom() {
     }
 
 
+    const playAudioOnRand = () => {
+        audioRand.volume = 0.6
+        audioRand.play();
+    }
+
+
     const cutoutHold = async (count, partisHold, TempCheckLastRand = null) => {
 
         if (parseInt(numberCutout) === 0) { 
@@ -448,6 +458,7 @@ export function HoldParticipantRandom() {
             let elHold = await getElementsRowItemHold();
             
             await clearClassInElementsHold();
+            playAudioOnRand();
             
             try {
                 elHold[indexRandom].classList.add('bgPartiToggleCutout');
@@ -456,9 +467,7 @@ export function HoldParticipantRandom() {
                     behavior: 'smooth',
                 });
             } catch (err) { }
-            
-            
-            
+
 
             setTimeout(async () => {
                 await clearClassInElementsHold();
@@ -475,6 +484,10 @@ export function HoldParticipantRandom() {
                             behavior: 'smooth'
                         });
                     }, 200);
+                    
+                    playSound('th', 'ขอแสดงความยินดีกับผู้ได้รับรางวัลด้วยครับ');
+                    document.querySelector('.container_itemHold').scrollTo(0, 0);
+
                     setStatusRandomCutoutFN(true);
                     await onSuccessCutout();
                 }
@@ -508,6 +521,11 @@ export function HoldParticipantRandom() {
         
         if (statusOnRandomCutout || partisHoldTemp.length <= 1 || parseInt(partisHoldTemp.length) === parseInt(numberCutout) || parseInt(numberCutout) < 1) return;
         
+        
+        [`ผู้ได้รับรางวัลมีเพียง ${numberCutout}คน ผู้ที่อยู่รอดจะเป็นผู้ได้รับรางวัล ขอให้โชคดีครับ`].forEach((text) => {
+            playSound('th', text);
+        })
+
         setStatusRandomCutoutFN(false);
         setStatusOnRandomCutout(true);
         
@@ -550,6 +568,9 @@ export function HoldParticipantRandom() {
         <>
             <div className='h-full text-black overflow-hidden flex flex-col px-1' data-theme='light'>
                 <div className='title-itemHold mb-4 flex justify-between items-end font-medium' style={{'fontSize': 20}}>
+                    
+                    <input id="soundOnRandom" type="hidden" onClick={() => new Audio("./sound_onRandom.mp3").play()} value="click me" />
+
                     <span className={`${statusRandomCutoutFN ? 'text-indigo-700' : 'text-red-600'}`}>
                         {
                             statusRandomCutoutFN ?
@@ -602,7 +623,7 @@ export function HoldParticipantRandom() {
                         <></>
                     }
                 </div>
-                <div className={`${participantsHold.length > 6 ? 'pb-80' : 'pb-20'} container_itemHold pt-3 h-full overflow-y-auto hide-scroll border-t-2 border-red-200 overflow-x-hidden`}>
+                <div className={`${participantsHold.length > 6 && statusOnRandomCutout ? 'pb-80' : 'pb-20'} container_itemHold pt-3 h-full overflow-y-auto hide-scroll border-t-2 border-red-200 overflow-x-hidden`}>
                     {
                         participantsHold.length > 0 ?
                         participantsHold.map((item, index) => {

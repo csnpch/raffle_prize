@@ -83,7 +83,7 @@ function App() {
                     <Dialogs className='z-50' />
                     <SnowAnimate />
                     { statusRandomCutoutFN && <Fireworks /> }
-                    <div className={`duration-1000 wh-full gap-6 fullXl:gap-8 grid overflow-y-auto pb-20 lg:pb-0 lg:grid-cols-[2fr_2.2fr_2fr] fullXl:grid-cols-3 justify-items-center
+                    <div className={`duration-1000 wh-full gap-6 overflow-y-auto fullXl:overflow-hidden fullXl:gap-8 grid pb-20 lg:pb-0 lg:grid-cols-[2fr_2.2fr_2fr] fullXl:grid-cols-3 justify-items-center
                         `}>
                         {/* ${statusOnRandomCutout ? 'grid-cols-[2fr_3fr_2fr] w-full' : 'grid-cols-[2fr_2.2fr_2fr] w-full layoutCardOriginals'} */}
                         <div className={`cardContent participantList duration-1000`}>

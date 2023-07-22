@@ -195,3 +195,18 @@
 .animateZoom {
     animation: zoomWhile 2s infinite;
 }
+
+
+.grid-app {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+
+@media (max-width: 768px) {
+    .grid-app {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+}

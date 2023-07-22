@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStoreState } from 'easy-peasy';
 
 import { Dialogs } from './components/Dialogs'
@@ -15,6 +15,9 @@ import { HoldParticipantRandom } from './components/HoldParticipantRandom'
 
 function App() {
 
+
+    const [loadingSetup, setLoadingSetup] = useState(true)
+
     const statusRandomCutoutFN = useStoreState((state) => state.statusRandomCutoutFN);
     const statusOnRandomCutout = useStoreState((state) => state.statusOnRandomCutout);
 
@@ -30,6 +33,7 @@ function App() {
         getDataFromLocalStorage('numberHoldRandom', 0);
         getDataFromLocalStorage('statusHoldNewRandom', true);
         getDataFromLocalStorage('statusRandomHold', false);
+        setTimeout(() => setLoadingSetup(false), 2000)
     }
 
     // const setUpDefaultValueLocalStorage = async () => {
@@ -63,7 +67,7 @@ function App() {
     }, [])
     
 
-
+    if (loadingSetup) return <p className='text-white text-lg p-4'>Loading...</p>
     
     return (
         <>
@@ -79,7 +83,7 @@ function App() {
                     <Dialogs className='z-50' />
                     <SnowAnimate />
                     { statusRandomCutoutFN && <Fireworks /> }
-                    <div className={`duration-1000 wh-full gap-6 fullXl:gap-8 grid grid-cols-[2fr_2.2fr_2fr] fullXl:grid-cols-3 justify-items-center
+                    <div className={`duration-1000 wh-full gap-6 fullXl:gap-8 grid overflow-y-auto pb-20 lg:pb-0 lg:grid-cols-[2fr_2.2fr_2fr] fullXl:grid-cols-3 justify-items-center
                         `}>
                         {/* ${statusOnRandomCutout ? 'grid-cols-[2fr_3fr_2fr] w-full' : 'grid-cols-[2fr_2.2fr_2fr] w-full layoutCardOriginals'} */}
                         <div className={`cardContent participantList duration-1000`}>
